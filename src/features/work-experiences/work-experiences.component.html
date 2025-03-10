@@ -1,0 +1,137 @@
+
+
+<button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Launch static backdrop modal</button>
+<div class="modal fade" id="staticBackdrop" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg mt-6" role="document">
+    <div class="modal-content border-0">
+      <div class="modal-body p-0">
+        <!-- work-experiences.component.html -->
+        <div class="card mb-3">
+          <div class="card-header">
+            <h5 class="mb-0">Work Experience</h5>
+            <div class="progress mt-2" style="height: 6px;">
+              <div class="progress-bar" [style.width]="(currentLanguageIndex + 1) / languages.length * 100 + '%'" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+          <div class="card-body bg-body-tertiary">
+            <form [formGroup]="workExperienceForm" (ngSubmit)="submitCurrentForm()">
+              <!-- Language indicator -->
+              <div class="mb-3 d-flex justify-content-between align-items-center">
+                <span class="badge bg-primary">{{ getCurrentLanguageName() }}</span>
+                <span>{{ currentLanguageIndex + 1 }} of {{ languages.length }}</span>
+              </div>
+
+              <!-- Hidden language code field -->
+              <input type="hidden" formControlName="languageCode">
+
+              <div class="row gx-2">
+                <div class="col-12 mb-3">
+                  <label class="form-label" for="jobTitle">Job Title</label>
+                  <input class="form-control" id="jobTitle" type="text" formControlName="jobTitle" placeholder="Job Title" />
+                  <small class="text-danger" *ngIf="submitted && f['jobTitle'].errors?.['required']">Job title is required</small>
+                </div>
+
+                <div class="col-sm-6 mb-3">
+                  <label class="form-label" for="companyName">Company Name</label>
+                  <input class="form-control" id="companyName" type="text" formControlName="companyName" placeholder="Company Name" />
+                  <small class="text-danger" *ngIf="submitted && f['companyName'].errors?.['required']">Company name is required</small>
+                </div>
+
+                <!-- Company Logo - Only shown for English (first form) -->
+                <div class="col-sm-6 mb-3" *ngIf="currentLanguageIndex === 0">
+                  <label class="form-label" for="companyLogo">Company Logo</label>
+                  <input class="form-control" id="companyLogo" type="file" (change)="onFileChange($event)" />
+                  <small class="text-danger" *ngIf="submitted && !selectedFile">Company logo is required</small>
+                </div>
+
+                <div class="col-12 mb-3">
+                  <label class="form-label" for="location">Location</label>
+                  <input class="form-control" id="location" type="text" formControlName="location" placeholder="City, Country" />
+                  <small class="text-danger" *ngIf="submitted && f['location'].errors?.['required']">Location is required</small>
+                </div>
+
+                <div class="col-sm-6 mb-3">
+                  <label class="form-label" for="startDate">Start Date</label>
+                  <input class="form-control" id="startDate" type="date" formControlName="startDate" />
+                  <small class="text-danger" *ngIf="submitted && f['startDate'].errors?.['required']">Start date is required</small>
+                </div>
+
+                <div class="col-sm-6 mb-3">
+                  <label class="form-label" for="endDate">End Date</label>
+                  <input class="form-control" id="endDate" type="date" formControlName="endDate" />
+                  <small class="form-text">Leave blank if this is your current job</small>
+                </div>
+
+                <!-- Skills as tags -->
+                <div class="col-12 mb-3">
+                  <label class="form-label" for="newSkill">Skills</label>
+                  <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="newSkill" placeholder="Add a skill..." #newSkill />
+                    <button class="btn btn-outline-primary " style="margin-top: 5px !important;" type="button" (click)="addSkill(newSkill.value); newSkill.value = ''">Add</button>
+                  </div>
+
+                  <!-- Display skills as tags -->
+                  <div class="col-12">
+                    <ul class="nav d-flex flex-wrap">
+                      <li *ngFor="let skill of skills; let i = index" (click)="removeSkill(i)" class="nav-item me-2">
+                        <button class="btn btn-sm btn-outline-secondary">
+                          <span class="fas fa-tag me-2"></span>
+                          {{ skill }}
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <small class="text-danger" *ngIf="submitted && skills.length === 0">At least one skill is required</small>
+                </div>
+
+
+                <div class="col-12 mb-3">
+                  <label class="form-label" for="description">Description</label>
+                  <textarea class="form-control" id="description" formControlName="description" rows="4"></textarea>
+                </div>
+
+                <div class="col-12 d-flex justify-content-between">
+                  <button type="button" class="btn btn-secondary" (click)="previousLanguage()" [disabled]="currentLanguageIndex === 0">
+                    Previous
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                    {{ isLastLanguage() ? 'Submit All' : 'Next' }}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Preview section showing saved experiences -->
+        <div class="card mt-3" *ngIf="savedForms.length > 0">
+          <div class="card-header">
+            <h5 class="mb-0">Saved Work Experiences</h5>
+          </div>
+          <div class="card-body">
+            <div class="list-group">
+              <div class="list-group-item" *ngFor="let form of savedForms; let i = index">
+                <div class="d-flex justify-content-between align-items-center">
+          <span>
+            <span class="badge bg-primary me-2">{{ getLanguageName(form.languageCode) }}</span>
+            <strong>{{ form.jobTitle }}</strong> at {{ form.companyName }}
+          </span>
+                  <button class="btn btn-sm btn-outline-primary" (click)="editSavedForm(i)">Edit</button>
+                </div>
+                <div class="mt-2">
+                  <small class="text-muted">Skills: </small>
+                  <span class="d-inline-flex flex-wrap gap-1 mt-1">
+            <span *ngFor="let skill of form.skills" class="badge bg-light text-dark">{{skill}}</span>
+          </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
