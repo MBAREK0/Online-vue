@@ -7,7 +7,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const jwtService = inject(JwtService);
 
   // Get token from storage
-  const token = localStorage.getItem('authToken');
+  const token = localStorage.getItem('token');
 
   if (!token) {
     router.navigate(['/auth/login']).then(r => console.log(r));

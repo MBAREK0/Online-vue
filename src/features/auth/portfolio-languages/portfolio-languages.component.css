@@ -1,0 +1,37 @@
+.selected-language-chip {
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.selected-language-chip button:hover {
+  opacity: 0.8;
+}
+
+.language-list-container {
+  scrollbar-width: thin;
+}
+
+.language-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.language-list-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.language-list-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.language-list-container::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.list-group-item {
+  transition: all 0.15s ease;
+}
+
+.list-group-item:hover {
+  background-color: #f5f5f5;
+}

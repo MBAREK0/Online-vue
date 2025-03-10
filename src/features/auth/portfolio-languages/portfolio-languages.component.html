@@ -1,0 +1,101 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+      <div class="card shadow">
+        <!-- Header -->
+        <div class="card-header bg-body-tertiary py-3">
+          <h4 class="mb-1">Choose Languages for Your Portfolio</h4>
+          <p class="text-muted mb-0">Select the languages you want to use for your portfolio translation</p>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body p-4">
+          <!-- Search input -->
+          <div class="mb-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-search"></i></span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Search languages"
+                [(ngModel)]="searchTerm"
+                (input)="searchLanguages()"
+              />
+            </div>
+          </div>
+
+          <!-- Selected languages section -->
+          <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="mb-0 fw-bold">Selected Languages ({{ selectedLanguages.length }})</h6>
+              <button
+                *ngIf="selectedLanguages.length > 0"
+                class="btn btn-sm btn-link text-danger"
+                (click)="clearAll()"
+              >
+                Clear all
+              </button>
+            </div>
+
+            <!-- Selected languages chips -->
+            <div class="d-flex flex-wrap gap-2 mb-3" *ngIf="selectedLanguages.length > 0">
+              @for (language of getSelectedLanguageViewModels(); track language.code) {
+                <div class="selected-language-chip bg-primary text-white px-3 py-1 rounded-pill d-flex align-items-center">
+                  {{ language.name }}
+                  <button class="btn btn-sm text-white p-0 ms-2" (click)="toggleLanguage(language)">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              }
+            </div>
+            <div *ngIf="selectedLanguages.length === 0" class="text-muted small fst-italic">
+              No languages selected. Choose from the list below.
+            </div>
+          </div>
+
+          <!-- Available languages section -->
+          <div>
+            <h6 class="mb-2 fw-bold">Available Languages</h6>
+
+            <!-- Language list with virtual scrolling -->
+            <div class="language-list-container border rounded" style="height: 300px; overflow-y: auto;">
+              @if (filteredLanguages.length > 0) {
+                <div class="list-group list-group-flush">
+                  @for (language of filteredLanguages; track language.code) {
+                    @if (!language.selected) {
+                      <button
+                        type="button"
+                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                        (click)="toggleLanguage(language)"
+                      >
+                        {{ language.name }}
+                        <span class="badge rounded-pill bg-light text-dark">{{ language.code }}</span>
+                      </button>
+                    }
+                  }
+                </div>
+              } @else {
+                <div class="p-4 text-center text-muted">
+                  <i class="fas fa-search fa-2x mb-2"></i>
+                  <p>No languages found matching "{{ searchTerm }}"</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer d-flex justify-content-end gap-2">
+          <button
+            class="btn btn-primary"
+            type="button"
+            [disabled]="selectedLanguages.length === 0"
+            (click)="saveLanguages()"
+          >
+            Save Languages
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

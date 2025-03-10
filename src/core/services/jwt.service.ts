@@ -18,11 +18,19 @@ export class JwtService {
     return decodedToken?.role || null;
   }
 
+  getUsername(token: string): string | null {
+    const decodedToken = this.getDecodedAccessToken(token);
+    return decodedToken?.sub || null;
+  }
+
   getUserPermissions(token: string): string[] {
     const decodedToken = this.getDecodedAccessToken(token);
     return decodedToken?.permissions.map((perm: any) => perm.authority) || [];
   }
 
 
-
+  getUserId(token: string): string | null {
+    const decodedToken = this.getDecodedAccessToken(token);
+    return decodedToken?.id || null;
+  }
 }

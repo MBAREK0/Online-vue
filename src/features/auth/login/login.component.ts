@@ -1,8 +1,14 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {JwtService} from "../../../core/services/jwt.service";
+import {load_portfolio_languages} from "../../../shared/state/app.actions";
+import {Store} from "@ngrx/store";
+import {AppState} from "../../../shared/state/app.reducer";
+import {selectPortfolioLanguages} from "../../../shared/state/app.selectors";
+import {filter, take} from "rxjs";
 
 
 @Component({
@@ -19,9 +25,10 @@ import {CommonModule, NgOptimizedImage} from '@angular/common';
 export class LoginComponent {
   loginForm: FormGroup;
   serverErrorMessage: string | null = null;
+  private store = inject(Store<AppState>);
 
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,private jwtService: JwtService) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['',Validators.required]
@@ -37,8 +44,16 @@ export class LoginComponent {
         next: (response) => {
           // save the token in local storage
           localStorage.setItem('token', response.token);
-          // redirect to the dashboard
-          this.router.navigate(['/']).then(r => console.log(r));
+
+          const username = <string>this.jwtService.getUsername(response.token)
+          const userId = <string>this.jwtService.getUserId(response.token)
+
+          localStorage.setItem('username', username);
+          localStorage.setItem('userId', userId);
+
+
+          this.router.navigate(['/auth/ptl']).then(r => console.log(r));
+
 
           this.serverErrorMessage = null;
         },
@@ -50,4 +65,5 @@ export class LoginComponent {
       console.log('Form is invalid');
     }
   }
+
 }

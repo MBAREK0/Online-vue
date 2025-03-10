@@ -8,6 +8,10 @@ import { routes } from './app.routes';
 import {HttpClientModule, provideHttpClient, withInterceptors} from '@angular/common/http';
 import {authInterceptorInterceptor} from "../core/interceptors/auth-interceptor.interceptor";
 import { provideStore } from '@ngrx/store';
+import {appReducer} from "../shared/state/app.reducer";
+import {provideEffects} from "@ngrx/effects";
+import {LanguagesEffects, PortfolioLanguagesEffects} from "../shared/state/app.effects";
+import {provideStoreDevtools} from "@ngrx/store-devtools";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,6 +19,9 @@ export const appConfig: ApplicationConfig = {
     // provideAnimations(),
     importProvidersFrom(MatButtonModule, MatToolbarModule, HttpClientModule),
     provideHttpClient(withInterceptors([authInterceptorInterceptor])),
-    provideStore()
+    provideStore({ app: appReducer }),
+    provideEffects([LanguagesEffects,PortfolioLanguagesEffects]),
+    provideHttpClient(),
+    provideStoreDevtools({ maxAge: 25 }),
 ],
 };

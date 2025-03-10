@@ -1,7 +1,11 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import {Component, AfterViewInit, OnInit, inject} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {RouterOutlet} from "@angular/router";
-import {AsideComponent} from "../../shared/components/aside/aside.component"; // Import CommonModule
+import {Router, RouterOutlet} from "@angular/router";
+import {AsideComponent} from "../../shared/components/aside/aside.component";
+import {DesktopNavComponent} from "../../shared/components/desktop-nav/desktop-nav.component";
+import {Store} from "@ngrx/store";
+import {AppState} from "../../shared/state/app.reducer";
+import {reset_app_state} from "../../shared/state/app.actions"; // Import CommonModule
 
 
 @Component({
@@ -9,7 +13,7 @@ import {AsideComponent} from "../../shared/components/aside/aside.component"; //
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   standalone: true,
-  imports: [CommonModule, RouterOutlet, AsideComponent]
+  imports: [CommonModule, RouterOutlet, AsideComponent, DesktopNavComponent]
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   theme: string = 'auto'; // Default theme
@@ -90,10 +94,15 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         navbarDoubleTop?.remove();
         navbarTopCombo?.remove();
     }
+
   }
+  constructor(private router: Router,private store: Store<AppState> ) {}
+
 
   logout() {
     localStorage.clear();
-    console.log('Logged out and localStorage cleared');
+    this.store.dispatch(reset_app_state());
+
+    this.router.navigate(['/auth/login']).then(success => console.log(success));
   }
 }
