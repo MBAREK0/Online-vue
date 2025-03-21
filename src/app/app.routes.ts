@@ -7,6 +7,9 @@ import {WorkExperienceComponent} from "../features/work-experiences/work-experie
 import {authGuard} from "../core/guards/auth.guard";
 import {PortfolioLanguagesComponent} from "../features/auth/portfolio-languages/portfolio-languages.component";
 import {portfolioLanguagesResolverResolver} from "../core/resolvers/portfolio-languages-resolver.resolver";
+import {
+  CreateWorkExperienceComponent
+} from "../features/work-experiences/create-work-experience/create-work-experience.component";
 
 export const routes: Routes = [
   {
@@ -35,10 +38,14 @@ export const routes: Routes = [
         // data: { role: ['MEMBER','ADMIN'], permissions: ['CAN_VIEW_RANKINGS','CAN_VIEW_COMPETITIONS','CAN_PARTICIPATE'] },
       },
       {
-        path:'work-experiences',
+        path:'portfolio/work-experiences',
         component : WorkExperienceComponent,
-        canActivate: [authGuard],
-
+        canActivate: [authGuard]
+      },
+      {
+        path: 'portfolio/work-experiences/create',
+        component: CreateWorkExperienceComponent,
+        canActivate: [authGuard]
       }
 
       ]

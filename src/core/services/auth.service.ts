@@ -21,5 +21,4 @@ export class AuthService {
   login(payload: any): Observable<any> {
     return this.http.post(this.loginUri, payload);
   }
-
 }

@@ -3,7 +3,6 @@ import {inject} from "@angular/core";
 import {AppState} from "../../shared/state/app.reducer";
 import {Store} from "@ngrx/store";
 import {load_portfolio_languages} from "../../shared/state/app.actions";
-import {selectPortfolioLanguages} from "../../shared/state/app.selectors";
 import {catchError, filter, of, switchMap, take, tap} from "rxjs";
 import {TranslationService} from "../services/translation.service";
 
@@ -28,4 +27,5 @@ export const portfolioLanguagesResolverResolver: ResolveFn<boolean> = (route, st
     }),
     switchMap(ptl => of(ptl.length === 0)),
     catchError(() => of(true))
-  );};
+  );
+};

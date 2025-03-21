@@ -5,7 +5,7 @@ import {inject} from "@angular/core";
 import {Router} from "@angular/router";
 
 export const authInterceptorInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService); // Inject AuthService
+  const authService = inject(AuthService);
 
   const token = localStorage.getItem('token');
   let clonedRequest = req; // Initialize the request

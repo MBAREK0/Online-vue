@@ -10,6 +10,7 @@ import {selectLanguages, selectPortfolioLanguages} from "../../../shared/state/a
 import {load_languages, load_portfolio_languages} from "../../../shared/state/app.actions";
 
 interface LanguageViewModel {
+  id  :number;
   code: string;
   name: string;
   selected: boolean;
@@ -28,7 +29,7 @@ export class PortfolioLanguagesComponent implements OnInit {
   languages: LanguageViewModel[] = [];
   portfolioLanguages: PortfolioTranslationLanguages[] = [];
 
-  selectedLanguages: string[] = [];
+  selectedLanguages: number[] = [];
   searchTerm: string = '';
   filteredLanguages: LanguageViewModel[] = [];
 
@@ -47,6 +48,7 @@ export class PortfolioLanguagesComponent implements OnInit {
       if (langs && langs.length > 0) {
         // Map state language model to view model
         this.languages = langs.map(lang => ({
+          id : lang.id,
           code: lang.code,
           name: lang.language,
           selected: this.isLanguageSelected(lang.code)
@@ -108,7 +110,7 @@ export class PortfolioLanguagesComponent implements OnInit {
   updateSelectedLanguages(): void {
     this.selectedLanguages = this.languages
       .filter(lang => lang.selected)
-      .map(lang => lang.code);
+      .map(lang => lang.id);
   }
 
   searchLanguages(): void {
@@ -127,9 +129,7 @@ export class PortfolioLanguagesComponent implements OnInit {
       this.translationService.insertPortfolioLanguages(this.selectedLanguages)
         .subscribe({
           next: (response) => {
-            console.log('Languages saved successfully', response);
-            // Navigate to the next page after successful save
-            this.router.navigate(['/next-page']);
+              this.router.navigate(['/']).then(r => console.log(r));
           },
           error: (error) => {
             console.error('Error saving languages', error);
@@ -146,8 +146,6 @@ export class PortfolioLanguagesComponent implements OnInit {
   fetchLanguages() {
     this.store.dispatch(load_languages());
   }
-  // fetchPortfolioLanguages() {
-  //   this.store.dispatch(load_portfolio_languages());
-  // }
+
 
 }

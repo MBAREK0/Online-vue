@@ -4,6 +4,8 @@ import {environment} from "../../environments/environment";
 import {Observable, of} from 'rxjs';
 import {Language, PortfolioTranslationLanguages} from "../../shared/state/app.reducer";
 
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -32,7 +34,20 @@ export class TranslationService  {
   }
 
 
-  insertPortfolioLanguages(languages: string[]): Observable<any> {
-    return this.http.post(this.apiUrl, { languages });
+  insertPortfolioLanguages(languages: number[]): Observable<any> {
+    const userId = localStorage.getItem('userId'); // Get user ID from localStorage
+
+    if (!userId) {
+      console.error('User ID not found in localStorage');
+      return of(null); // Handle the case where userId is missing
+    }
+
+    const payload = languages.map(languageId => ({
+      languageId,
+      userId
+    }));
+
+    return this.http.post(this.apiUrl, payload);
   }
+
 }
