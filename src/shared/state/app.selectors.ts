@@ -17,6 +17,13 @@ export const selectPortfolioLanguages = createSelector(
   (state: AppState) => state.ptl
 );
 
+// Select user portfolio translation languages (ptl) from the state
+export const selectUserPortfolioLanguages = createSelector(
+  selectAppState,
+  (state: AppState) => state.userPtl
+);
+
+
 // Select a specific language by code
 export const selectLanguageByCode = (code: string) =>
   createSelector(selectLanguages, (languages) =>

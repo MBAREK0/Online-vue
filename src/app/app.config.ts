@@ -10,7 +10,7 @@ import {authInterceptorInterceptor} from "../core/interceptors/auth-interceptor.
 import { provideStore } from '@ngrx/store';
 import {appReducer} from "../shared/state/app.reducer";
 import {provideEffects} from "@ngrx/effects";
-import {LanguagesEffects, PortfolioLanguagesEffects} from "../shared/state/app.effects";
+import {LanguagesEffects, PortfolioLanguagesEffects, UserPortfolioLanguagesEffects} from "../shared/state/app.effects";
 import {provideStoreDevtools} from "@ngrx/store-devtools";
 
 export const appConfig: ApplicationConfig = {
@@ -20,7 +20,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(MatButtonModule, MatToolbarModule, HttpClientModule),
     provideHttpClient(withInterceptors([authInterceptorInterceptor])),
     provideStore({ app: appReducer }),
-    provideEffects([LanguagesEffects,PortfolioLanguagesEffects]),
+    provideEffects([LanguagesEffects,PortfolioLanguagesEffects,UserPortfolioLanguagesEffects]),
     provideHttpClient(),
     provideStoreDevtools({ maxAge: 25 }),
 ],

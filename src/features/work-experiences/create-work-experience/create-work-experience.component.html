@@ -1,176 +1,279 @@
-<!-- work-experiences.component.html -->
-<div class="card shadow-sm mb-4">
-  <div class="card-header bg-primary text-white py-3">
-    <h5 class="mb-0">Work Experience</h5>
-    <div class="progress mt-2 bg-light" style="height: 8px;">
-      <div class="progress-bar bg-warning" [style.width]="(currentLanguageIndex + 1) / languages.length * 100 + '%'" role="progressbar" [attr.aria-valuenow]="(currentLanguageIndex + 1) / languages.length * 100" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-  </div>
-  <div class="card-body">
-    <form [formGroup]="workExperienceForm" (ngSubmit)="submitCurrentForm()">
-      <!-- Language indicator -->
-      <div class="mb-4 d-flex justify-content-between align-items-center">
-        <div>
-          <span class="badge bg-primary rounded-pill px-3 py-2 fs-6">{{ getCurrentLanguageName() }}</span>
-        </div>
-        <div class="text-muted">
-          <small>{{ currentLanguageIndex + 1 }} of {{ languages.length }}</small>
+<div class="container-fluid p-2">
+  <div class="card border-0 shadow-sm rounded-3 mb-3">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2">
+      <h5 class="mb-0 fw-bold text-white">
+        <i class="fas fa-briefcase me-1"></i>Work Experience
+      </h5>
+      <div class="progress" style="height: 6px; width: 150px;">
+        <div class="progress-bar bg-success"
+             [style.width]="(currentLanguageIndex + 1) / languages.length * 100 + '%'"
+             role="progressbar"
+             [attr.aria-valuenow]="(currentLanguageIndex + 1) / languages.length * 100"
+             aria-valuemin="0"
+             aria-valuemax="100">
         </div>
       </div>
+    </div>
 
-      <!-- Hidden language code field -->
-      <input type="hidden" formControlName="languageCode">
-
-      <div class="row g-3">
-        <div class="col-12">
-          <label class="form-label fw-bold" for="jobTitle">Job Title</label>
-          <div class="input-group">
-            <input class="form-control form-control-lg" id="jobTitle" type="text" formControlName="jobTitle" placeholder="Enter your job title" />
-            <button *ngIf="currentLanguageIndex > 0" type="button" class="btn btn-outline-info" (click)="translateField('jobTitle')">
-              <i class="fas fa-language me-1"></i> Translate
-            </button>
+    <div class="card-body p-3">
+      <form [formGroup]="workExperienceForm" (ngSubmit)="submitCurrentForm()">
+        <!-- Language Indicator -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="d-flex align-items-center">
+            <span class="badge bg-primary text-white px-2 py-1 rounded-pill me-2">
+              <i class="fas fa-globe me-1"></i>{{ getCurrentLanguageName() }}
+            </span>
+            <small class="text-muted">{{ currentLanguageIndex + 1 }} / {{ languages.length }}</small>
           </div>
-          <div class="invalid-feedback d-block" *ngIf="submitted && f['jobTitle'].errors?.['required']">Job title is required</div>
         </div>
 
-        <div class="col-md-6">
-          <label class="form-label fw-bold" for="companyName">Company Name</label>
-          <div class="input-group">
-            <input class="form-control" id="companyName" type="text" formControlName="companyName" placeholder="Enter company name" />
-            <button *ngIf="currentLanguageIndex > 0" type="button" class="btn btn-outline-info" (click)="translateField('companyName')">
-              <i class="fas fa-language me-1"></i> Translate
-            </button>
-          </div>
-          <div class="invalid-feedback d-block" *ngIf="submitted && f['companyName'].errors?.['required']">Company name is required</div>
-        </div>
+        <input type="hidden" formControlName="languageCode">
 
-        <!-- Company Logo - Only shown for English (first form) -->
-        <div class="col-md-6" *ngIf="currentLanguageIndex === 0">
-          <label class="form-label fw-bold" for="companyLogo">Company Logo</label>
-          <div class="input-group">
-            <input class="form-control" id="companyLogo" type="file" (change)="onFileChange($event)" />
-            <button class="btn btn-outline-secondary" type="button" title="Clear file">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <div class="invalid-feedback d-block" *ngIf="submitted && !selectedFile">Company logo is required</div>
-        </div>
-
-        <div class="col-12">
-          <label class="form-label fw-bold" for="location">Location</label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-            <input class="form-control" id="location" type="text" formControlName="location" placeholder="City, Country" />
-            <button *ngIf="currentLanguageIndex > 0" type="button" class="btn btn-outline-info" (click)="translateField('location')">
-              <i class="fas fa-language me-1"></i> Translate
-            </button>
-          </div>
-          <div class="invalid-feedback d-block" *ngIf="submitted && f['location'].errors?.['required']">Location is required</div>
-        </div>
-
-        <div class="col-md-6">
-          <label class="form-label fw-bold" for="startDate">Start Date</label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-            <input class="form-control" id="startDate" type="date" formControlName="startDate" />
-          </div>
-          <div class="invalid-feedback d-block" *ngIf="submitted && f['startDate'].errors?.['required']">Start date is required</div>
-        </div>
-
-        <div class="col-md-6">
-          <label class="form-label fw-bold" for="endDate">End Date</label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-            <input class="form-control" id="endDate" type="date" formControlName="endDate" />
-          </div>
-          <div class="form-text text-muted">Leave blank if this is your current job</div>
-        </div>
-
-        <!-- Skills as tags -->
-        <div class="col-12">
-          <label class="form-label fw-bold" for="newSkill">Skills</label>
-          <div class="input-group mb-3">
-            <span class="input-group-text"><i class="fas fa-tags"></i></span>
-            <input type="text" class="form-control" id="newSkill" placeholder="Add a skill..." #newSkill />
-            <button class="btn btn-primary" type="button" (click)="addSkill(newSkill.value); newSkill.value = ''">
-              <i class="fas fa-plus me-1"></i> Add
-            </button>
-            <button *ngIf="currentLanguageIndex > 0" type="button" class="btn btn-outline-info" (click)="translateSkills()">
-              <i class="fas fa-language me-1"></i> Translate All Skills
-            </button>
+        <div class="row g-3">
+          <!-- Job Title -->
+          <div class="col-12">
+            <label class="form-label fw-semibold text-primary mb-1 small" for="jobTitle">Job Title</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light border-primary text-primary">
+                <i class="fas fa-user-tie"></i>
+              </span>
+              <input class="form-control form-control-sm"
+                     id="jobTitle"
+                     type="text"
+                     formControlName="jobTitle"
+                     placeholder="Enter your job title" />
+              <button *ngIf="currentLanguageIndex > 0"
+                      type="button"
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="translateField('jobTitle')">
+                <i class="fas fa-language me-1"></i>Translate
+              </button>
+            </div>
+            <div class="text-danger small mt-1"
+                 *ngIf="submitted && f['jobTitle'].errors?.['required']">
+              Job title is required
+            </div>
           </div>
 
-          <!-- Display skills as tags -->
-          <div class="mb-3">
-            <div class="d-flex flex-wrap gap-2">
-              <span *ngFor="let skill of skills; let i = index" class="badge bg-light text-dark p-2 border">
+          <!-- Company Name and Logo -->
+          <div class="col-md-6" *ngIf="currentLanguageIndex === primaryLanguageIndex">
+            <label class="form-label fw-semibold text-primary mb-1 small" for="companyName">Company Name</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light border-primary text-primary">
+                <i class="fas fa-building"></i>
+              </span>
+              <input class="form-control form-control-sm"
+                     id="companyName"
+                     type="text"
+                     formControlName="companyName"
+                     placeholder="Enter company name" />
+            </div>
+            <div class="text-danger small mt-1"
+                 *ngIf="submitted && f['companyName'].errors?.['required']">
+              Company name is required
+            </div>
+          </div>
+
+          <!-- Company Logo -->
+          <div class="col-md-6" *ngIf="currentLanguageIndex === primaryLanguageIndex">
+            <label class="form-label fw-semibold text-primary mb-1 small" for="companyLogo">Company Logo</label>
+            <div class="input-group input-group-sm">
+              <input #fileInput
+                     class="form-control form-control-sm"
+                     id="companyLogo"
+                     type="file"
+                     (change)="onFileChange($event)" />
+              <button class="btn btn-outline-danger btn-sm" type="button">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="col-12">
+            <label class="form-label fw-semibold text-primary mb-1 small" for="location">Location</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light border-primary text-primary">
+                <i class="fas fa-map-marker-alt"></i>
+              </span>
+              <input class="form-control form-control-sm"
+                     id="location"
+                     type="text"
+                     formControlName="location"
+                     placeholder="City, Country" />
+              <button *ngIf="currentLanguageIndex > 0"
+                      type="button"
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="translateField('location')">
+                <i class="fas fa-language me-1"></i>Translate
+              </button>
+            </div>
+            <div class="text-danger small mt-1"
+                 *ngIf="submitted && f['location'].errors?.['required']">
+              Location is required
+            </div>
+          </div>
+
+          <!-- Dates - Only for Primary Language -->
+          <div class="col-md-6" *ngIf="currentLanguageIndex === primaryLanguageIndex">
+            <label class="form-label fw-semibold text-primary mb-1 small" for="startDate">Start Date</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light border-primary text-primary">
+                <i class="fas fa-calendar-alt"></i>
+              </span>
+              <input class="form-control form-control-sm"
+                     id="startDate"
+                     type="date"
+                     formControlName="startDate" />
+            </div>
+            <div class="text-danger small mt-1"
+                 *ngIf="submitted && f['startDate'].errors?.['required']">
+              Start date is required
+            </div>
+          </div>
+
+          <div class="col-md-6" *ngIf="currentLanguageIndex === primaryLanguageIndex">
+            <label class="form-label fw-semibold text-primary mb-1 small" for="endDate">End Date</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light border-primary text-primary">
+                <i class="fas fa-calendar-check"></i>
+              </span>
+              <input class="form-control form-control-sm"
+                     id="endDate"
+                     type="date"
+                     formControlName="endDate" />
+            </div>
+            <small class="form-text text-muted small">Leave blank if current job</small>
+          </div>
+
+          <!-- Skills -->
+          <div class="col-12">
+            <label class="form-label fw-semibold text-primary mb-1 small" for="newSkill">Skills</label>
+            <div class="input-group input-group-sm mb-2">
+              <span class="input-group-text bg-light border-primary text-primary">
+                <i class="fas fa-tags"></i>
+              </span>
+              <input type="text"
+                     class="form-control form-control-sm"
+                     id="newSkill"
+                     placeholder="Add a skill..."
+                     #newSkill />
+              <button class="btn btn-primary btn-sm"
+                      type="button"
+                      (click)="addSkill(newSkill.value); newSkill.value = ''">
+                <i class="fas fa-plus me-1"></i>Add
+              </button>
+              <button *ngIf="currentLanguageIndex > 0"
+                      type="button"
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="translateSkills()">
+                <i class="fas fa-language me-1"></i>Translate
+              </button>
+            </div>
+
+            <!-- Skills Badges -->
+            <div class="d-flex flex-wrap gap-1 mb-2">
+              <span *ngFor="let skill of skills; let i = index"
+                    class="badge bg-primary text-white py-1 px-2 rounded-pill small">
                 {{ skill }}
-                <button type="button" class="btn-close ms-1" (click)="removeSkill(i)" aria-label="Remove"></button>
+                <button type="button"
+                        class="btn-close btn-close-white btn-sm ms-1"
+                        (click)="removeSkill(i)"
+                        aria-label="Remove"></button>
               </span>
             </div>
-            <div class="invalid-feedback d-block" *ngIf="submitted && skills.length === 0">At least one skill is required</div>
+            <div class="text-danger small"
+                 *ngIf="submitted && skills.length === 0">
+              At least one skill is required
+            </div>
           </div>
-        </div>
 
-        <div class="col-12">
-          <label class="form-label fw-bold" for="description">Description</label>
-          <div class="input-group">
-            <textarea class="form-control" id="description" formControlName="description" rows="4" placeholder="Describe your responsibilities and achievements..."></textarea>
-            <button *ngIf="currentLanguageIndex > 0" type="button" class="btn btn-outline-info" (click)="translateField('description')" style="align-self: stretch;">
-              <i class="fas fa-language me-1"></i><br>Translate
-            </button>
+          <!-- Description -->
+          <div class="col-12">
+            <label class="form-label fw-semibold text-primary mb-1 small" for="description">Description</label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light border-primary text-primary align-items-start">
+                <i class="fas fa-file-alt mt-1"></i>
+              </span>
+              <textarea class="form-control form-control-sm"
+                        id="description"
+                        formControlName="description"
+                        rows="3"
+                        placeholder="Describe your responsibilities and achievements..."></textarea>
+              <button *ngIf="currentLanguageIndex > 0"
+                      type="button"
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="translateField('description')">
+                <i class="fas fa-language me-1"></i>Translate
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div class="col-12 d-flex justify-content-between mt-4">
-          <div>
-            <button type="button" class="btn btn-outline-secondary" (click)="previousLanguage()" [disabled]="currentLanguageIndex === 0">
-              <i class="fas fa-arrow-left me-1"></i> Previous
-            </button>
-            <button *ngIf="currentLanguageIndex > 0" type="button" class="btn btn-info ms-2" (click)="translateAllFields()">
-              <i class="fas fa-language me-1"></i> Translate All
+          <!-- Navigation Buttons -->
+          <div class="col-12 d-flex justify-content-between mt-3">
+            <div>
+              <button type="button"
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="previousLanguage()"
+                      [disabled]="currentLanguageIndex === 0">
+                <i class="fas fa-arrow-left me-1"></i>Previous
+              </button>
+              <button *ngIf="currentLanguageIndex > 0"
+                      type="button"
+                      class="btn btn-primary btn-sm ms-2"
+                      (click)="translateAllFields()"
+              >
+                <i class="fas fa-language me-1"></i>Translate All
+              </button>
+            </div>
+            <button type="submit"
+                    class="btn btn-primary btn-sm">
+              <i class="fas" [ngClass]="isLastLanguage() ? 'fa-check' : 'fa-arrow-right'"></i>
+              {{ isLastLanguage() ? ' Submit All' : ' Next' }}
             </button>
           </div>
-          <button type="submit" class="btn btn-primary">
-            <i class="fas" [ngClass]="isLastLanguage() ? 'fa-check' : 'fa-arrow-right'"></i>
-            {{ isLastLanguage() ? ' Submit All' : ' Next' }}
-          </button>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
 
-<!-- Preview section showing saved experiences -->
-<div class="card shadow-sm mt-4" *ngIf="savedForms.length > 0">
-  <div class="card-header bg-light py-3">
-    <h5 class="mb-0">Saved Work Experiences</h5>
-  </div>
-  <div class="card-body p-0">
-    <div class="list-group list-group-flush">
-      <div class="list-group-item border-0 border-bottom py-3" *ngFor="let form of savedForms; let i = index">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <span class="badge bg-primary rounded-pill me-2">{{ getLanguageName(form.languageCode) }}</span>
-            <strong class="fs-5">{{ form.jobTitle }}</strong>
-            <span class="text-muted ms-2">at {{ form.companyName }}</span>
-          </div>
-          <div>
-            <button class="btn btn-sm btn-outline-primary" (click)="editSavedForm(i)">
-              <i class="fas fa-edit me-1"></i> Edit
+  <!-- Saved Work Experiences -->
+  <div class="card border-0 shadow-sm rounded-3 mt-3" *ngIf="savedForms.length > 0">
+    <div class="card-header bg-primary text-white py-2">
+      <h5 class="mb-0 fw-bold text-white">
+        <i class="fas fa-archive me-1"></i>Saved Work Experiences
+      </h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="list-group list-group-flush">
+        <div class="list-group-item border-0 border-bottom py-3 px-3" *ngFor="let form of savedForms; let i = index">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <span class="badge bg-primary text-white rounded-pill me-2 small">
+                {{ getLanguageName(form.languageCode) }}
+              </span>
+              <strong class="small text-primary">{{ form.jobTitle }}</strong>
+              <span class="text-muted small ms-1">at {{ form.companyName }}</span>
+            </div>
+            <button class="btn btn-outline-primary btn-sm" (click)="editSavedForm(i)">
+              <i class="fas fa-edit me-1"></i>Edit
             </button>
           </div>
-        </div>
-        <div class="mt-3">
-          <div class="d-flex align-items-center text-muted mb-2">
-            <i class="fas fa-map-marker-alt me-2"></i> {{ form.location }}
-            <span class="mx-2">•</span>
-            <i class="fas fa-calendar me-2"></i> {{ form.startDate | date:'MMM yyyy' }} - {{ form.endDate ? (form.endDate | date:'MMM yyyy') : 'Present' }}
+          <div class="mt-2 text-muted small">
+            <span><i class="fas fa-map-marker-alt me-1"></i>{{ form.location }}</span>
+            <span class="mx-1">•</span>
+            <span><i class="fas fa-calendar me-1"></i>
+              {{ form.startDate | date:'MMM yyyy' }} -
+              {{ form.endDate ? (form.endDate | date:'MMM yyyy') : 'Present' }}
+            </span>
           </div>
-          <div>
-            <small class="text-muted">Skills: </small>
-            <div class="d-inline-flex flex-wrap gap-1 mt-1">
-              <span *ngFor="let skill of form.skills" class="badge bg-light text-dark border">{{skill}}</span>
+          <div class="mt-2">
+            <small class="text-primary fw-bold me-2">Skills:</small>
+            <div class="d-inline-flex flex-wrap gap-1">
+              <span *ngFor="let skill of form.skills"
+                    class="badge bg-primary text-white rounded-pill py-1 px-2 small">
+                {{skill}}
+              </span>
             </div>
           </div>
         </div>

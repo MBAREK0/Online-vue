@@ -30,3 +30,17 @@ export const load_portfolio_languages_error = createAction(
   "[Languages API] Load Portfolio Languages Error",
   props<{ error: string }>()
 )
+
+export const load_user_portfolio_languages = createAction(
+  "[Languages API] Load Portfolio Languages"
+);
+export const load_user_portfolio_languages_success = createAction(
+  "[Languages API] Load Portfolio Languages Success",
+  props<{ ptl: PortfolioTranslationLanguages[] }>()
+)
+
+export const load_user_portfolio_languages_error = createAction(
+  "[Languages API] Load Portfolio Languages Error",
+  props<{ error: string }>()
+)
+

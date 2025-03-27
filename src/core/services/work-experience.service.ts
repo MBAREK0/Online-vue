@@ -12,12 +12,13 @@ export class WorkExperienceService {
   private apiUrl = `${environment.apiUrl}/v1/portfolio/work-experience`;
 
   constructor(private http: HttpClient) { }
-
-  createWorkExperience(workExperiences: WorkExperience[], companyLogoFile: File): Observable<WorkExperience[]> {
+  createWorkExperience(workExperiences: WorkExperience[], companyLogoFile: File | null): Observable<WorkExperience[]> {
     const formData = new FormData();
 
-    // Add the file to the form data
-    formData.append('companyLogoFile', companyLogoFile);
+    // Add the file to the form data if it exists
+    if (companyLogoFile) {
+      formData.append('companyLogoFile', companyLogoFile);
+    }
 
     // Add the work experience data as a JSON string
     formData.append('workExperiences', JSON.stringify(workExperiences));

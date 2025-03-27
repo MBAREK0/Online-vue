@@ -10,6 +10,7 @@ import {portfolioLanguagesResolverResolver} from "../core/resolvers/portfolio-la
 import {
   CreateWorkExperienceComponent
 } from "../features/work-experiences/create-work-experience/create-work-experience.component";
+import {createWorkExperienceResolver} from "../core/resolvers/create-work-experience.resolver";
 
 export const routes: Routes = [
   {
@@ -45,7 +46,10 @@ export const routes: Routes = [
       {
         path: 'portfolio/work-experiences/create',
         component: CreateWorkExperienceComponent,
-        canActivate: [authGuard]
+        canActivate: [authGuard],
+        resolve: {
+          canAccess: createWorkExperienceResolver
+        }
       }
 
       ]

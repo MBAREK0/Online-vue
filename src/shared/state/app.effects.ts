@@ -7,7 +7,10 @@ import {
   load_languages_success,
   load_languages_error,
   load_portfolio_languages,
-  load_portfolio_languages_success, load_portfolio_languages_error
+  load_portfolio_languages_success,
+  load_portfolio_languages_error,
+  load_user_portfolio_languages,
+  load_user_portfolio_languages_success, load_user_portfolio_languages_error
 } from './app.actions';
 
 @Injectable()
@@ -41,6 +44,25 @@ export class PortfolioLanguagesEffects {
         this.translationService.getPortfolioLanguages().pipe(
           map(ptl => load_portfolio_languages_success({ ptl })),
           catchError(error => of(load_portfolio_languages_error({ error: error.message })))
+        )
+      )
+    )
+  );
+}
+
+
+@Injectable()
+export class UserPortfolioLanguagesEffects {
+  private actions$ = inject(Actions);
+  private translationService = inject(TranslationService);
+
+  loadPortfolioLanguages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(load_user_portfolio_languages),
+      exhaustMap(() =>
+        this.translationService.getUserPortfolioLanguages().pipe(
+          map(ptl => load_user_portfolio_languages_success({ ptl })),
+          catchError(error => of(load_user_portfolio_languages_error({ error: error.message })))
         )
       )
     )

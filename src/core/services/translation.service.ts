@@ -50,4 +50,13 @@ export class TranslationService  {
     return this.http.post(this.apiUrl, payload);
   }
 
+  getUserPortfolioLanguages(): Observable<PortfolioTranslationLanguages[]> {
+    const userName = localStorage.getItem('username');
+    if (!userName) {
+      console.error('No userName found in localStorage');
+      return of([]);
+    }
+    return this.http.get<PortfolioTranslationLanguages[]>(this.portfolioLanguagesUri+userName);
+  }
+
 }
