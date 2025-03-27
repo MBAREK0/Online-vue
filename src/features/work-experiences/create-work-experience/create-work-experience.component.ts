@@ -3,10 +3,11 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { WorkExperience } from "../../../core/models/WorkExperience";
 import { WorkExperienceService } from "../../../core/services/work-experience.service";
 import { CommonModule, NgForOf, NgIf } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
+import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import { AppState, PortfolioTranslationLanguages } from "../../../shared/state/app.reducer";
 import { Store } from "@ngrx/store";
 import { selectUserPortfolioLanguages } from "../../../shared/state/app.selectors";
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-create-work-experience',
@@ -19,7 +20,18 @@ import { selectUserPortfolioLanguages } from "../../../shared/state/app.selector
     FormsModule
   ],
   templateUrl: './create-work-experience.component.html',
-  styleUrl: './create-work-experience.component.css'
+  styleUrl: './create-work-experience.component.css',
+  animations: [
+    trigger('modalState', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.9)' }),
+        animate('200ms ease-out', style({ opacity: 1, transform: 'scale(1)' }))
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in', style({ opacity: 0, transform: 'scale(0.9)' }))
+      ])
+    ])
+  ]
 })
 export class CreateWorkExperienceComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -35,6 +47,8 @@ export class CreateWorkExperienceComponent implements OnInit {
   primaryLanguageIndex = 0;
 
   savedForms: WorkExperience[] = [];
+  errorMessage: string | null = null;
+  isErrorModalVisible = false;
 
   languageSkillsMap: Map<string, string[]> = new Map();
   originalPrimaryTexts: Map<string, string | string[]> = new Map();
@@ -263,7 +277,7 @@ export class CreateWorkExperienceComponent implements OnInit {
     const logoFile = this.selectedFiles[primaryLangCode];
 
     if (!logoFile) {
-      alert('Please upload a company logo.');
+      this.showErrorModal('Please upload a company logo.');
       return;
     }
 
@@ -279,13 +293,59 @@ export class CreateWorkExperienceComponent implements OnInit {
         this.initForm();
         this.loadLanguageForm(this.primaryLanguageIndex);
 
-        alert('Work experiences saved successfully!');
+        this.showErrorModal('Work experiences saved successfully!', true);
       },
-      error: (error) => {
+      error: (error: HttpErrorResponse) => {
         console.error('Error creating work experiences', error);
-        alert('Error saving work experiences. Please try again.');
+
+        // Handle different types of error responses
+        let errorMsg = 'Error saving work experiences. Please try again.';
+
+        if (error.error instanceof ErrorEvent) {
+          // Client-side error
+          errorMsg = error.error.message;
+        } else if (error.status) {
+          // Server-side error with status code
+          switch (error.status) {
+            case 400:
+              errorMsg = error.error?.message || 'Invalid data. Please check your inputs.';
+              break;
+            case 401:
+              errorMsg = 'Unauthorized. Please log in again.';
+              break;
+            case 403:
+              errorMsg = 'You do not have permission to perform this action.';
+              break;
+            case 404:
+              errorMsg = 'Service not found. Please contact support.';
+              break;
+            case 500:
+              errorMsg = 'Server error. Please try again later.';
+              break;
+            default:
+              errorMsg = error.error?.message || 'An unexpected error occurred.';
+          }
+        }
+
+        this.showErrorModal(errorMsg);
       }
     });
+  }
+  showErrorModal(message: string, isSuccess: boolean = false) {
+    this.errorMessage = message;
+    this.isErrorModalVisible = true;
+
+    // Automatically hide success messages after 3 seconds
+    if (isSuccess) {
+      setTimeout(() => {
+        this.isErrorModalVisible = false;
+        this.errorMessage = null;
+      }, 3000);
+    }
+  }
+  closeErrorModal() {
+    this.isErrorModalVisible = false;
+    this.errorMessage = null;
   }
 
   loadLanguageForm(index: number) {

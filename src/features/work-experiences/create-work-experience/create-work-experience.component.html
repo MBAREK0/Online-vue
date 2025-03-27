@@ -280,4 +280,59 @@
       </div>
     </div>
   </div>
+  <div class="modal custom-modal"
+       [class.show]="isErrorModalVisible"
+       [style.display]="isErrorModalVisible ? 'block' : 'none'"
+       tabindex="-1"
+       role="dialog"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content shadow-lg border-0 rounded-4">
+        <div class="modal-body text-center p-4">
+          <div class="mb-3">
+            <div
+              *ngIf="errorMessage?.includes('successfully')"
+              class="rounded-circle bg-success text-white mx-auto d-flex align-items-center justify-content-center mb-3"
+              style="width: 60px; height: 60px;"
+            >
+              <i class="fas fa-check fa-2x"></i>
+            </div>
+            <div
+              *ngIf="!errorMessage?.includes('successfully')"
+              class="rounded-circle bg-danger text-white mx-auto d-flex align-items-center justify-content-center mb-3"
+              style="width: 60px; height: 60px;"
+            >
+              <i class="fas fa-exclamation fa-2x"></i>
+            </div>
+          </div>
+
+          <h5 class="mb-3 fw-bold"
+              [ngClass]="errorMessage?.includes('successfully') ? 'text-success' : 'text-danger'">
+            {{ errorMessage?.includes('successfully') ? 'Success' : 'Error' }}
+          </h5>
+
+          <p class="text-muted mb-4">
+            {{ errorMessage }}
+          </p>
+
+          <div class="d-flex justify-content-center gap-2">
+            <button
+              type="button"
+              class="btn btn-sm"
+              [ngClass]="errorMessage?.includes('successfully') ? 'btn-outline-success' : 'btn-outline-danger'"
+              (click)="closeErrorModal()"
+            >
+              {{ errorMessage?.includes('successfully') ? 'Continue' : 'Dismiss' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay for modal -->
+  <div class="modal-backdrop fade"
+       [class.show]="isErrorModalVisible"
+       [style.display]="isErrorModalVisible ? 'block' : 'none'">
+  </div>
 </div>
