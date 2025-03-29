@@ -12,11 +12,12 @@ import {appReducer} from "../shared/state/app.reducer";
 import {provideEffects} from "@ngrx/effects";
 import {LanguagesEffects, PortfolioLanguagesEffects, UserPortfolioLanguagesEffects} from "../shared/state/app.effects";
 import {provideStoreDevtools} from "@ngrx/store-devtools";
+import {provideAnimations} from "@angular/platform-browser/animations";
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    // provideAnimations(),
+    provideAnimations(),
     importProvidersFrom(MatButtonModule, MatToolbarModule, HttpClientModule),
     provideHttpClient(withInterceptors([authInterceptorInterceptor])),
     provideStore({ app: appReducer }),

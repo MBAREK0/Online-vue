@@ -31,22 +31,20 @@ export const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
         component: HomeComponent,
-        canActivate: [authGuard],
         // data: { role: ['MEMBER','ADMIN'], permissions: ['CAN_VIEW_RANKINGS','CAN_VIEW_COMPETITIONS','CAN_PARTICIPATE'] },
       },
       {
         path:'portfolio/work-experiences',
         component : WorkExperienceComponent,
-        canActivate: [authGuard]
       },
       {
         path: 'portfolio/work-experiences/create',
         component: CreateWorkExperienceComponent,
-        canActivate: [authGuard],
         resolve: {
           canAccess: createWorkExperienceResolver
         }

@@ -141,71 +141,6 @@ export class CreateWorkExperienceComponent implements OnInit {
     this.skills = [...savedSkills];
   }
 
-  translateField(fieldName: string) {
-    const nonTranslatableFields = ['companyName', 'startDate', 'endDate'];
-    if (nonTranslatableFields.includes(fieldName)) return;
-
-    if (this.currentLanguageIndex === this.primaryLanguageIndex) return;
-
-    const originalText = this.originalPrimaryTexts.get(fieldName) as string;
-    if (!originalText) return;
-
-    const targetLanguage = this.languages[this.currentLanguageIndex].code;
-    this.translating = true;
-
-    this.http.get<{ translatedText: string }>(
-      `http://localhost:8081/api/v1/ai/translate?text=${encodeURIComponent(originalText)}&targetLanguage=${targetLanguage}`
-    ).subscribe({
-      next: (response) => {
-        this.workExperienceForm.patchValue({ [fieldName]: response.translatedText });
-        this.translating = false;
-      },
-      error: (error) => {
-        console.error('Translation error:', error);
-        alert('Translation failed. Please try again.');
-        this.translating = false;
-      }
-    });
-  }
-
-  translateSkills() {
-    if (this.currentLanguageIndex === this.primaryLanguageIndex) return;
-
-    const originalSkills = this.originalPrimaryTexts.get('skills') as string[];
-    if (!originalSkills || originalSkills.length === 0) return;
-
-    const targetLanguage = this.languages[this.currentLanguageIndex].code;
-    this.translating = true;
-
-    const skillsText = originalSkills.join('|||');
-
-    this.http.get<{ translatedText: string }>(
-      `http://localhost:8081/api/v1/ai/translate?text=${encodeURIComponent(skillsText)}&targetLanguage=${targetLanguage}`
-    ).subscribe({
-      next: (response) => {
-        const translatedSkills = response.translatedText.split('|||');
-        this.skills = translatedSkills.map(skill => skill.trim()).filter(skill => skill !== '');
-        this.saveSkillsForCurrentLanguage();
-        this.translating = false;
-      },
-      error: (error) => {
-        console.error('Skills translation error:', error);
-        alert('Skills translation failed. Please try again.');
-        this.translating = false;
-      }
-    });
-  }
-
-  translateAllFields() {
-    if (this.currentLanguageIndex === this.primaryLanguageIndex) return; // Don't translate primary language
-
-    // Translate fields (except company name, start date, end date)
-    this.translateField('jobTitle');
-    this.translateField('location');
-    this.translateField('description');
-    this.translateSkills();
-  }
-
   submitCurrentForm() {
     this.submitted = true;
 
@@ -268,6 +203,7 @@ export class CreateWorkExperienceComponent implements OnInit {
 
     this.submitted = false;
   }
+
   submitAllForms() {
     if (this.savedForms.length === 0) {
       return;
@@ -330,22 +266,6 @@ export class CreateWorkExperienceComponent implements OnInit {
         this.showErrorModal(errorMsg);
       }
     });
-  }
-  showErrorModal(message: string, isSuccess: boolean = false) {
-    this.errorMessage = message;
-    this.isErrorModalVisible = true;
-
-    // Automatically hide success messages after 3 seconds
-    if (isSuccess) {
-      setTimeout(() => {
-        this.isErrorModalVisible = false;
-        this.errorMessage = null;
-      }, 3000);
-    }
-  }
-  closeErrorModal() {
-    this.isErrorModalVisible = false;
-    this.errorMessage = null;
   }
 
   loadLanguageForm(index: number) {
@@ -423,5 +343,89 @@ export class CreateWorkExperienceComponent implements OnInit {
       this.currentLanguageIndex = langIndex;
       this.loadLanguageForm(langIndex);
     }
+  }
+
+  // ----------------------- error modal methods
+  showErrorModal(message: string, isSuccess: boolean = false) {
+    this.errorMessage = message;
+    this.isErrorModalVisible = true;
+
+    // Automatically hide success messages after 3 seconds
+    if (isSuccess) {
+      setTimeout(() => {
+        this.isErrorModalVisible = false;
+        this.errorMessage = null;
+      }, 3000);
+    }
+  }
+
+  closeErrorModal() {
+    this.isErrorModalVisible = false;
+    this.errorMessage = null;
+  }
+
+  // ----------------------- translation methods
+  translateField(fieldName: string) {
+    const nonTranslatableFields = ['companyName', 'startDate', 'endDate'];
+    if (nonTranslatableFields.includes(fieldName)) return;
+
+    if (this.currentLanguageIndex === this.primaryLanguageIndex) return;
+
+    const originalText = this.originalPrimaryTexts.get(fieldName) as string;
+    if (!originalText) return;
+
+    const targetLanguage = this.languages[this.currentLanguageIndex].code;
+    this.translating = true;
+
+    this.http.get<{ translatedText: string }>(
+      `http://localhost:8081/api/v1/ai/translate?text=${encodeURIComponent(originalText)}&targetLanguage=${targetLanguage}`
+    ).subscribe({
+      next: (response) => {
+        this.workExperienceForm.patchValue({ [fieldName]: response.translatedText });
+        this.translating = false;
+      },
+      error: (error) => {
+        console.error('Translation error:', error);
+        alert('Translation failed. Please try again.');
+        this.translating = false;
+      }
+    });
+  }
+
+  translateSkills() {
+    if (this.currentLanguageIndex === this.primaryLanguageIndex) return;
+
+    const originalSkills = this.originalPrimaryTexts.get('skills') as string[];
+    if (!originalSkills || originalSkills.length === 0) return;
+
+    const targetLanguage = this.languages[this.currentLanguageIndex].code;
+    this.translating = true;
+
+    const skillsText = originalSkills.join('|||');
+
+    this.http.get<{ translatedText: string }>(
+      `http://localhost:8081/api/v1/ai/translate?text=${encodeURIComponent(skillsText)}&targetLanguage=${targetLanguage}`
+    ).subscribe({
+      next: (response) => {
+        const translatedSkills = response.translatedText.split('|||');
+        this.skills = translatedSkills.map(skill => skill.trim()).filter(skill => skill !== '');
+        this.saveSkillsForCurrentLanguage();
+        this.translating = false;
+      },
+      error: (error) => {
+        console.error('Skills translation error:', error);
+        alert('Skills translation failed. Please try again.');
+        this.translating = false;
+      }
+    });
+  }
+
+  translateAllFields() {
+    if (this.currentLanguageIndex === this.primaryLanguageIndex) return;
+
+    this.translateField('jobTitle');
+    this.translateField('location');
+    this.translateField('description');
+    this.translateSkills();
   }
 }

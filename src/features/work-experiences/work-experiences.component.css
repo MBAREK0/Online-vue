@@ -50,3 +50,59 @@ li {
   padding: 10px;
   border-bottom: 1px solid #ddd;
 }
+/* Add these styles to your work-experiences.component.css file */
+
+.work-experiences-list {
+  padding: 0;
+}
+
+.work-experience-item {
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  border-left: 4px solid #4e73df;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+.drag-handle {
+  cursor: move;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+
+.drag-handle:hover {
+  background-color: #f8f9fa;
+}
+
+.company-placeholder {
+  border: 1px dashed #ddd;
+}
+
+.skills-container {
+  margin-top: 0.5rem;
+}
+
+.border-left-primary {
+  border-left: 4px solid #4e73df !important;
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-radius: 0.35rem;
+  opacity: 0.8;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.work-experiences-list.cdk-drop-list-dragging .work-experience-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

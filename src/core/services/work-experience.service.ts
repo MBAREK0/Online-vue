@@ -1,9 +1,11 @@
 // work-experience.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {Observable, of} from 'rxjs';
 import { WorkExperience } from '../models/WorkExperience';
 import {environment} from "../../environments/environment";
+import {WorkExperienceResponseVM} from "../interfaces/WorkExperienceResponseVM";
+import {ReorderRequest} from "../interfaces/ReorderRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,9 @@ import {environment} from "../../environments/environment";
 export class WorkExperienceService {
   private apiUrl = `${environment.apiUrl}/v1/portfolio/work-experience`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+
+  }
   createWorkExperience(workExperiences: WorkExperience[], companyLogoFile: File | null): Observable<WorkExperience[]> {
     const formData = new FormData();
 
@@ -26,11 +30,21 @@ export class WorkExperienceService {
     return this.http.post<WorkExperience[]>(this.apiUrl, formData);
   }
 
-  getWorkExperiences(): Observable<WorkExperience[]> {
-    return this.http.get<WorkExperience[]>(this.apiUrl);
+  getAllWorkExperiences(): Observable<WorkExperienceResponseVM[]> {
+    const username = localStorage.getItem('username'); // Fetch dynamically when needed
+    return this.http.get<WorkExperienceResponseVM[]>(`${this.apiUrl}/user/${username}/primary`);
   }
 
-  deleteWorkExperience(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  reorderWorkExperiences(reorderRequests: ReorderRequest[]): Observable<WorkExperienceResponseVM[]> {
+    return this.http.put<WorkExperienceResponseVM[]>(`${this.apiUrl}/reorder`, reorderRequests);
+  }
+
+  deleteWorkExperience(experienceId: string): Observable<WorkExperienceResponseVM[]> {
+
+    return this.http.delete<WorkExperienceResponseVM[]>(`${this.apiUrl}/${experienceId}`);
+  }
+
+  archiveWorkExperience(experienceId: string): Observable<WorkExperienceResponseVM[]> {
+    return this.http.put<WorkExperienceResponseVM[]>(`${this.apiUrl}/${experienceId}/archive`, {});
   }
 }

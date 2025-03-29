@@ -1,0 +1,118 @@
+<div class="container-fluid py-4">
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0 fw-bold">Work Experience</h4>
+    <a class="btn btn-primary" routerLink="/portfolio/work-experiences/create">
+      <i class="fas fa-plus me-2"></i>Add Experience
+    </a>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center p-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="mt-2">Loading your work experiences...</div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && workExperiences.length === 0" class="card shadow-sm border-0 rounded-3 p-5 text-center">
+    <div class="py-4">
+      <i class="fas fa-briefcase text-muted fa-3x mb-3"></i>
+      <h5>No work experiences yet</h5>
+      <p class="text-muted">Share your professional journey by adding your work history.</p>
+      <a class="btn btn-primary mt-2" routerLink="/portfolio/work-experiences/create">
+        <i class="fas fa-plus me-2"></i>Add First Experience
+      </a>
+    </div>
+  </div>
+
+  <!-- Work Experience Cards -->
+  <div *ngIf="!loading && workExperiences.length > 0"
+       cdkDropList
+       (cdkDropListDropped)="drop($event)"
+       class="row g-4">
+
+    <div *ngFor="let experience of workExperiences"
+         class="col-12"
+         cdkDrag>
+      <div class="card shadow-sm border-0 rounded-3 h-100 position-relative">
+        <!-- Drag Handle -->
+        <div cdkDragHandle class="position-absolute top-0 start-0 m-2 p-2 bg-light rounded-circle" style="cursor: move;">
+          <i class="fas fa-grip-lines text-muted"></i>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="row g-0">
+            <!-- Company Logo Column -->
+            <div class="col-md-3 border-end">
+              <div class="d-flex justify-content-center align-items-center h-100 p-3">
+                <div *ngIf="experience.companyLogo" class="company-logo-container">
+                  <img [src]="experience.companyLogo"
+                       alt="{{ experience.companyName }} logo"
+                       class="img-fluid"
+                       style="max-height: 120px; max-width: 100%;">
+                </div>
+                <div *ngIf="!experience.companyLogo"
+                     class="d-flex align-items-center justify-content-center bg-light rounded-3"
+                     style="width: 120px; height: 120px;">
+                  <i class="fas fa-building text-muted fa-3x"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Experience Details Column -->
+            <div class="col-md-9">
+              <div class="p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div>
+                    <h5 class="mb-1 fw-bold">{{ experience.jobTitle }}</h5>
+                    <h6 class="text-primary mb-1">{{ experience.companyName }}</h6>
+                    <div class="text-muted mb-2">
+                      <i class="fas fa-calendar-alt me-2"></i>
+                      {{ experience.startDate | date:'MMM yyyy' }} -
+                      {{ experience.endDate ? (experience.endDate | date:'MMM yyyy') : 'Present' }}
+                      <span class="mx-2">•</span>
+                      <i class="fas fa-map-marker-alt me-2"></i>{{ experience.location }}
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="d-flex">
+                    <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditWorkExperienceModal(experience)">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary me-2" (click)="archiveWorkExperience(experience.experienceId)">
+                      <i class="fas fa-archive"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteWorkExperience(experience.experienceId)">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Description -->
+                <p *ngIf="experience.description" class="mb-3">
+                  {{ experience.description | slice:0:150 }}{{ experience.description.length > 150 ? '...' : '' }}
+                </p>
+
+                <!-- Skills -->
+                <div *ngIf="experience.skills && experience.skills.length > 0">
+                  <div class="skills-container">
+                    <span *ngFor="let skill of experience.skills" class="badge bg-light text-dark me-2 mb-2 py-2 px-3 rounded-pill">
+                      {{ skill }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="text-muted small mt-3">
+                  Last updated: {{ experience.updatedAt | date:'mediumDate' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
