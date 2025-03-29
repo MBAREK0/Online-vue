@@ -1,4 +1,4 @@
-export interface WorkExperience {
+export interface WorkExperienceRequest {
   id?: number;
   experienceId?: string;
   userId: number;

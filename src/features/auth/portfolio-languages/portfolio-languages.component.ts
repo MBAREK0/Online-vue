@@ -70,7 +70,7 @@ export class PortfolioLanguagesComponent implements OnInit {
     });
   }
 
-  // Get selected language view models for displaying chips
+  // Get selected language view vm for displaying chips
   getSelectedLanguageViewModels(): LanguageViewModel[] {
     return this.languages.filter(lang => lang.selected);
   }

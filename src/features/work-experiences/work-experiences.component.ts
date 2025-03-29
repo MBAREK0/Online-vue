@@ -5,8 +5,8 @@ import {
 } from '@angular/cdk/drag-drop';
 
 import { WorkExperienceService } from '../../core/services/work-experience.service';
-import { WorkExperienceResponseVM } from '../../core/interfaces/WorkExperienceResponseVM';
-import { ReorderRequest } from '../../core/interfaces/ReorderRequest';
+import { WorkExperienceResponse } from '../../core/vm/work-experience/WorkExperienceResponse';
+import { ReorderRequest } from '../../core/vm/ReorderRequest';
 import { ConfirmationDialogService } from "../../core/services/ConfirmationDialogService";
 import { ToastService } from "../../core/services/ToastService";
 import {RouterLink} from "@angular/router";
@@ -23,7 +23,7 @@ import {RouterLink} from "@angular/router";
   styleUrls: ['./work-experiences.component.css']
 })
 export class WorkExperienceComponent implements OnInit {
-  workExperiences: WorkExperienceResponseVM[] = [];
+  workExperiences: WorkExperienceResponse[] = [];
   loading = false;
 
   constructor(
@@ -92,7 +92,7 @@ export class WorkExperienceComponent implements OnInit {
     console.log('Open add work experience modal');
   }
 
-  openEditWorkExperienceModal(experience: WorkExperienceResponseVM): void {
+  openEditWorkExperienceModal(experience: WorkExperienceResponse): void {
     console.log('Open edit work experience modal', experience);
   }
 

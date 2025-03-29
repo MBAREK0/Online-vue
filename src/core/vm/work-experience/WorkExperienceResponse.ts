@@ -1,4 +1,4 @@
-export interface WorkExperienceResponseVM {
+export interface WorkExperienceResponse {
   id: number;
   experienceId: string;
   userId: number;

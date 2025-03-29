@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
-import { WorkExperience } from "../../../core/models/WorkExperience";
+import { WorkExperienceRequest } from "../../../core/vm/work-experience/WorkExperienceRequest";
 import { WorkExperienceService } from "../../../core/services/work-experience.service";
 import { CommonModule, NgForOf, NgIf } from "@angular/common";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
@@ -9,7 +9,7 @@ import { Store } from "@ngrx/store";
 import { selectUserPortfolioLanguages } from "../../../shared/state/app.selectors";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { ActivatedRoute, Router } from "@angular/router";
-import {WorkExperienceResponseVM} from "../../../core/interfaces/WorkExperienceResponseVM";
+import {WorkExperienceResponse} from "../../../core/vm/work-experience/WorkExperienceResponse";
 
 @Component({
   selector: 'app-update-work-experience',
@@ -49,7 +49,7 @@ export class UpdateWorkExperienceComponent implements OnInit {
   currentLanguageIndex = 0;
   primaryLanguageIndex = 0;
 
-  savedForms: WorkExperienceResponseVM[] = [];
+  savedForms: WorkExperienceResponse[] = [];
   errorMessage: string | null = null;
   isErrorModalVisible = false;
   experienceId: string = '';
@@ -238,7 +238,7 @@ export class UpdateWorkExperienceComponent implements OnInit {
     const formValue = {
       ...this.workExperienceForm.value,
       skills: [...this.skills]
-    } as WorkExperienceResponseVM;
+    } as WorkExperienceResponse;
 
     const existingIndex = this.savedForms.findIndex(
       form => form.languageCode === formValue.languageCode
@@ -292,7 +292,7 @@ export class UpdateWorkExperienceComponent implements OnInit {
 
   updateWorkExperience(experienceId: string, workExperiencesJson: string, logoFile: File | null) {
     // Parse the saved forms to reformat them
-    const workExperiences: WorkExperienceResponseVM[] = JSON.parse(workExperiencesJson);
+    const workExperiences: WorkExperienceResponse[] = JSON.parse(workExperiencesJson);
 
     // Convert each form to match WorkExperienceRequestVM structure
     const requestData = workExperiences.map(exp => {
@@ -324,7 +324,7 @@ export class UpdateWorkExperienceComponent implements OnInit {
       formData.append('companyLogoFile', logoFile);
     }
 
-    this.http.put<WorkExperience[]>(
+    this.http.put<WorkExperienceRequest[]>(
       `${this.workExperienceService['apiUrl']}/${experienceId}`,
       formData
     ).subscribe({

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
-import { WorkExperience } from "../../../core/models/WorkExperience";
+import { WorkExperienceRequest } from "../../../core/vm/work-experience/WorkExperienceRequest";
 import { WorkExperienceService } from "../../../core/services/work-experience.service";
 import { CommonModule, NgForOf, NgIf } from "@angular/common";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
@@ -46,7 +46,7 @@ export class CreateWorkExperienceComponent implements OnInit {
   currentLanguageIndex = 0;
   primaryLanguageIndex = 0;
 
-  savedForms: WorkExperience[] = [];
+  savedForms: WorkExperienceRequest[] = [];
   errorMessage: string | null = null;
   isErrorModalVisible = false;
 
@@ -173,7 +173,7 @@ export class CreateWorkExperienceComponent implements OnInit {
     const formValue = {
       ...this.workExperienceForm.value,
       skills: [...this.skills]
-    } as WorkExperience;
+    } as WorkExperienceRequest;
 
     const existingIndex = this.savedForms.findIndex(
       form => form.languageCode === formValue.languageCode
