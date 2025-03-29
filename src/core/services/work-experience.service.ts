@@ -47,4 +47,10 @@ export class WorkExperienceService {
   archiveWorkExperience(experienceId: string): Observable<WorkExperienceResponseVM[]> {
     return this.http.put<WorkExperienceResponseVM[]>(`${this.apiUrl}/${experienceId}/archive`, {});
   }
+
+  fetchWorkExperienceById(experienceId: string): Observable<WorkExperienceResponseVM[]> {
+    const username = localStorage.getItem('username');
+    return this.http.get<WorkExperienceResponseVM[]>(`${this.apiUrl}/user/${username}/experience/${experienceId}`);
+
+  }
 }

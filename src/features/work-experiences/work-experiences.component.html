@@ -79,7 +79,7 @@
 
                   <!-- Action Buttons -->
                   <div class="d-flex">
-                    <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditWorkExperienceModal(experience)">
+                    <button class="btn btn-sm btn-outline-primary me-2" routerLink="/portfolio/work-experiences/update/{{ experience.experienceId }}">
                       <i class="fas fa-edit"></i>
                     </button>
                     <button class="btn btn-sm btn-outline-secondary me-2" (click)="archiveWorkExperience(experience.experienceId)">

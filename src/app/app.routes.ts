@@ -11,6 +11,9 @@ import {
   CreateWorkExperienceComponent
 } from "../features/work-experiences/create-work-experience/create-work-experience.component";
 import {createWorkExperienceResolver} from "../core/resolvers/create-work-experience.resolver";
+import {
+  UpdateWorkExperienceComponent
+} from "../features/work-experiences/update-work-experience/update-work-experience.component";
 
 export const routes: Routes = [
   {
@@ -45,6 +48,13 @@ export const routes: Routes = [
       {
         path: 'portfolio/work-experiences/create',
         component: CreateWorkExperienceComponent,
+        resolve: {
+          canAccess: createWorkExperienceResolver
+        }
+      },
+      {
+        path: 'portfolio/work-experiences/update/:id',
+        component: UpdateWorkExperienceComponent,
         resolve: {
           canAccess: createWorkExperienceResolver
         }
