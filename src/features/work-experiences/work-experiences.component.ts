@@ -103,7 +103,7 @@ export class WorkExperienceComponent implements OnInit {
     ).subscribe((confirmed: any) => {
       if (confirmed) {
         this.workExperienceService.deleteWorkExperience(experienceId).subscribe({
-          next: (updatedExperiences) => {
+          next: () => {
             this.loadWorkExperiences();
             this.toastService.showSuccess('Work experience deleted successfully');
           },
@@ -122,8 +122,8 @@ export class WorkExperienceComponent implements OnInit {
     ).subscribe((confirmed: any) => {
       if (confirmed) {
         this.workExperienceService.archiveWorkExperience(experienceId).subscribe({
-          next: (updatedExperiences) => {
-            this.workExperiences = updatedExperiences;
+          next: () => {
+            this.loadWorkExperiences();
             this.toastService.showSuccess('Work experience archived successfully');
           },
           error: (error) => {
